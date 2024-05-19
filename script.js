@@ -7,13 +7,13 @@ body {
     background-color: #f0f0f0;
 }
 
-.container {
+.flex {
     display: grid;
     grid-template-columns: repeat(3, 150px);
     gap: 10px;
 }
 
-.draggable {
+.image {
     width: 150px;
     height: 150px;
     background-size: cover;
