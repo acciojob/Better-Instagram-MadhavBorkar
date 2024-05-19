@@ -1,28 +1,50 @@
-//your code here
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f0f0f0;
-}
+document.addEventListener('DOMContentLoaded', () => {
+  let draggedElement = null;
 
-.flex {
-    display: grid;
-    grid-template-columns: repeat(3, 150px);
-    gap: 10px;
-}
+  document.querySelectorAll('.image').forEach(image => {
+    image.addEventListener('dragstart', (e) => {
+      draggedElement = e.target;
+      setTimeout(() => {
+        e.target.style.visibility = 'hidden';
+      }, 0);
+    });
 
-.image {
-    width: 150px;
-    height: 150px;
-    background-size: cover;
-    background-position: center;
-}
+    image.addEventListener('dragend', (e) => {
+      setTimeout(() => {
+        e.target.style.visibility = 'visible';
+        draggedElement = null;
+      }, 0);
+    });
 
-#div1 { background-image: url('image1.jpg'); }
-#div2 { background-image: url('image2.jpg'); }
-#div3 { background-image: url('image3.jpg'); }
-#div4 { background-image: url('image4.jpg'); }
-#div5 { background-image: url('image5.jpg'); }
-#div6 { background-image: url('image6.jpg'); }
+    image.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+
+    image.addEventListener('dragenter', (e) => {
+      e.preventDefault();
+      if (e.target.classList.contains('image')) {
+        e.target.style.border = '2px dashed #000';
+      }
+    });
+
+    image.addEventListener('dragleave', (e) => {
+      if (e.target.classList.contains('image')) {
+        e.target.style.border = '2px solid #ccc';
+      }
+    });
+
+    image.addEventListener('drop', (e) => {
+      if (e.target.classList.contains('image')) {
+        e.target.style.border = '2px solid #ccc';
+
+        let tempBackground = draggedElement.style.backgroundImage;
+        draggedElement.style.backgroundImage = e.target.style.backgroundImage;
+        e.target.style.backgroundImage = tempBackground;
+
+        let tempText = draggedElement.textContent;
+        draggedElement.textContent = e.target.textContent;
+        e.target.textContent = tempText;
+      }
+    });
+  });
+});
