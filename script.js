@@ -1,50 +1,37 @@
-document.addEventListener('DOMContentLoaded', () => {
-  let draggedElement = null;
+const draggables = document.querySelectorAll('.draggable');
+let draggedElement = null;
 
-  document.querySelectorAll('.image').forEach(image => {
-    image.addEventListener('dragstart', (e) => {
-      draggedElement = e.target;
-      setTimeout(() => {
-        e.target.style.visibility = 'hidden';
-      }, 0);
+draggables.forEach(draggable => {
+    // Start dragging
+    draggable.addEventListener('dragstart', (e) => {
+        draggedElement = e.target;
+        setTimeout(() => {
+            draggedElement.style.visibility = 'hidden'; // Make it invisible during drag
+        }, 0);
     });
 
-    image.addEventListener('dragend', (e) => {
-      setTimeout(() => {
-        e.target.style.visibility = 'visible';
-        draggedElement = null;
-      }, 0);
+    // End dragging
+    draggable.addEventListener('dragend', () => {
+        setTimeout(() => {
+            draggedElement.style.visibility = 'visible'; // Restore visibility after drop
+            draggedElement = null;
+        }, 0);
     });
 
-    image.addEventListener('dragover', (e) => {
-      e.preventDefault();
+    // Allow drop
+    draggable.addEventListener('dragover', (e) => {
+        e.preventDefault();
     });
 
-    image.addEventListener('dragenter', (e) => {
-      e.preventDefault();
-      if (e.target.classList.contains('image')) {
-        e.target.style.border = '2px dashed #000';
-      }
+    // Handle drop
+    draggable.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (draggedElement !== e.target) {
+            // Swap background images
+            let draggedStyle = window.getComputedStyle(draggedElement).backgroundImage;
+            let targetStyle = window.getComputedStyle(e.target).backgroundImage;
+            draggedElement.style.backgroundImage = targetStyle;
+            e.target.style.backgroundImage = draggedStyle;
+        }
     });
-
-    image.addEventListener('dragleave', (e) => {
-      if (e.target.classList.contains('image')) {
-        e.target.style.border = '2px solid #ccc';
-      }
-    });
-
-    image.addEventListener('drop', (e) => {
-      if (e.target.classList.contains('image')) {
-        e.target.style.border = '2px solid #ccc';
-
-        let tempBackground = draggedElement.style.backgroundImage;
-        draggedElement.style.backgroundImage = e.target.style.backgroundImage;
-        e.target.style.backgroundImage = tempBackground;
-
-        let tempText = draggedElement.textContent;
-        draggedElement.textContent = e.target.textContent;
-        e.target.textContent = tempText;
-      }
-    });
-  });
 });
